@@ -22,9 +22,9 @@ module.exports = {
       items: [
         {
           type: "doc",
-          docId: "api",
+          docId: "index",
           position: "left",
-          label: "API",
+          label: "Docs",
         },
         { to: "/blog", label: "Blog", position: "left" },
         {
