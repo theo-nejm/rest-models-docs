@@ -74,11 +74,11 @@ myModel.set({ name: "Jake" });
 
 When you do this, your object with new data is on hold, waiting to be saved.
 
-_You can - and we recommend to - sequentially set attributes before saving'em._
+_You can - and we recommend to - sequentially set attributes before saving'em instead saving after each change._
 
 ### `save()`
 
-Saves the data that you did modifiy.
+Saves the data you modified.
 
 If the data haves a `primaryKey (id, _id, ...)` it will fetch using the put or patch method (based on your preference you've set on model config), else, the data will be fetched with post method.
 
@@ -91,7 +91,7 @@ To fetch the data, will be used the url you've set on model's config.
 Can receive an optional attribute parameter. In this case, it will return the value stored at this parameter in your object.
 
 ```js
-myModel.get("name"); // returns 'Jake'
+myModel.get('name'); // returns 'Jake'
 ```
 
 If there isn't parameters, get method returns the entire object.
@@ -108,8 +108,87 @@ If it has never been changed, returns the initial object.
 
 Saved changes can't be retrieved by this method.
 
+```js
+myModel.setData({ id: 1, name: 'Kobe' })
+
+myModel.getOriginalData(); // returns the data with name 'Kobe'
+
+myModel.set({ name: 'Paul' })
+
+myModel.getOriginalData(); // returns data with name 'Kobe'
+
+myModel.save(); // saves the data (fetch)
+
+myModel.getOriginalData(); // returns data with name 'Paul'
+```
+
 ### `remove()`
 
 Makes a delete request based on object's primary key.
 
 If there isn't a primary key in the object, remove method will not execute.
+
+```js
+myModel.get() // { id: 1, name: 'Paul' }
+
+myModel.remove() // delete request to api based on id (1)
+```
+
+### `hasChanges()`
+
+Returns a boolean based on if there is some unsaved change.
+
+```js
+myModel.get() // { id: 1, name: 'Paul' }
+
+myModel.set({ name: 'Ryan' })
+
+myModel.hasChanges() // returns true 
+
+myModel.save()
+
+myModel.hasChanges() // returns false
+```
+
+### `getChanges()`
+
+Returns a object of everything has changed in the model before saving it.
+
+```js
+const myData = {
+    id: 1515,
+    name: "Samantha",
+    lastName: "Bucks",
+    age: 18,
+    country: "England",
+    gender: "F",
+    cellphoneNumber: "999777666"
+}
+
+myModel.setData(myData);
+
+myModel.set({ lastName: "Williams", age: 21 });
+
+myModel.set({ lastName: "Jeffrey" });
+
+myModel.getChanges(); // returns { lastName: "Jeffrey", age: 21 }
+```
+
+### `discardChanges()`
+
+Discards all unsaved changes and throws back the model to this original form.
+
+As original form we can understand the initial form - if there isn't saves - or last saved object data.
+
+```js
+// using the same object of getChanges() example...
+
+myModel.discardChanges(); // discards { lastName: "Jeffrey", age: 21 }
+
+myModel.set({ lastName: "Jeffrey", age: 21 });
+
+myModel.save();
+
+myModel.discardChanges(); // doesn't discard anything
+
+```
