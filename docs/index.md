@@ -6,24 +6,23 @@ title: Getting Started
 
 # Rest Models
 
-
 ### 🚀 Getting Started
 
 + To get started, you must install our package on npm using npm or yarn.
 
-    + Case using yarn: 
+    + Using yarn: 
     
     `yarn add rest-models`
 
-    + Case using npm:
+    + Using npm:
 
     `npm i rest-models`
 
 ### ⚙️ Project Dependencies
 
-+ Rest modules have as devDependencies:
++ Rest modules have as dependencies:
     
-    + **mobx**: to make global states management. 
+    + **mobx**: to make state management simple and flexible. 
     You can read more about it on: [mobx site.](https://mobx.js.org/)
 
     + **axios**: to make necessary requests and abstract'em.
@@ -35,6 +34,6 @@ title: Getting Started
 
 + To learn more about REST APIs, [follow this link.](https://restfulapi.net/)
 
-+ Rest Models works using Models and Collections to make easier the process of managing data on frontend applications.
++ Rest Models works using Models and Collections to make devs life easier.
 
-+ Models basically are classes with some util methods that get your work easier on working with external rest api data.
++ Models basically are classes with some util methods that get your work easier on interacting to external REST API data.
