@@ -5,120 +5,111 @@ title: Working with models
 
 # Models
 
-### What are models?
+Models are abstractions to things you do frequently, like:
 
-+ Models are abstractions to things you do frequently, like:
-    
-    + HTTP post, delete, patch/put, get requests.
+- HTTP post, delete, patch/put, get requests.
+- Manage the data received from API.
+- Compare and make data changes.
 
-    + Manage the data received from API.
+## 🌐 Configuring the Model
 
-    + Compaire and make data changes.
+Models have a very simple configuration.
+The config object basically is:
 
-### 🌐 Configuring the Model
+| Name       | Type            | Description                                                                                                                      |
+| ---------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **url\***  | string          | The endpoint that represents your object in API route.                                                                           |
+| primaryKey | string          | It is used to define the name of the primary key in your object. If received other than 'id'.                                    |
+| editMethod | "put" / "patch" | The method that you preffer to use to edit thing in the database. It can only be set with "put" or "patch". Its defaultly "put". |
 
-+ Models have a very simple configuration.
+**Example:**
 
-    + The config object basically is: 
-
-    `url: required` <br />
-    The endpoint that represents your object in API route. <br />
-    _{ url: '/users' }_
-
-    `primaryKey: optional` <br />
-    It is used to define the name of the primary key in your object. If received other than 'id'. <br />
-    _{ primaryKey: '\_id' }_
-
-    `editMethod: optional` <br />
-    The method that you preffer to use to edit thing in the database. It can only be set with "put" or "patch". Its defaultly "put". <br />
-    _{ editMethod: 'patch' }_
-
-    ```
-    {
-        url: '/users',
-        primaryKey: '_id',
-        editMethod: 'patch'
-    }
-    ```
-
-### 🪚 Building your model:
-
-+ Your models should be instances of Model class. To instance it, you just have to:
-
-```ts
-const myModel = new Model(modelConfigs) // and import it from rest-models
-
-myModel.setData(myData);
+```js
+{
+  url: "/users",
+  primaryKey: "_id",
+  editMethod: "patch"
+}
 ```
 
-### 🌎 Populating your model:
+## 🪚 Building your model
 
-+ A model itself can't do anything. For make you model being useful, you have to populate it.
-
-+ You just have to use the funcion myModel.setData(data) and pass as parameter the object that you want to model.
+Your models should be instances of Model class. To instance it, you just have to:
 
 ```ts
+import { Model } from "rest-models";
+
 const config = {
-    url: '/users',
-    primaryKey: '_id',
-}
+  url: "/model",
+};
 
-const userModel = new Model(config);
-
-const myObject = {
-    _id: '1da8sj-fasnhjok3da6v',
-    name: 'John',
-    lastName: 'Jeffrey',
-    age: 32,
-}
-
-userModel.setData(myObject);
+const myModel = new Model(config);
 ```
 
-+ The object can - and we recommend to - be fetched from the API you are using in your application.
+## 🌎 Populating your model
 
-### 💎 Getting started with the methods:
+A model itself can't do anything. For make you model being useful, you have to populate it.
+You just have to use the method `setData(data)` and pass as parameter the object that you want to model.
 
-+ set():
+```ts
+myModel.setData({
+  _id: "1da8sj-fasnhjok3da6v",
+  name: "John",
+  lastName: "Jeffrey",
+  age: 32,
+});
+```
 
-    + lets you to modify existing attributes separatedly.<br />
-    `userModel.set({ name: 'Jake' })`
+_The object can - and we recommend to - be fetched from the API you are using in your application._
 
-    + When you do this, your object with new data is on hold, waiting to be saved.
+## 💎 Getting started with the methods
 
-    + You can - and we recommend to - sequentially set attributes before saving'em.
+### `set()`
 
-+ save():
-    
-    + saves the data that you did modifiy.
-    
-    + If the data haves a primaryKey (id, _id, etc) it will fetch using the put or patch method (based on your preference you've set on model config), else, the data will be fetched with post method.
+Lets you to modify existing attributes separatedly.<br />
 
-    + Basically you will insert some data, modify - if you want to - and save it. 
+```js
+myModel.set({ name: "Jake" });
+```
 
-    + To fetch the data, will be used the url you've set on model's config.
+When you do this, your object with new data is on hold, waiting to be saved.
 
-+ get():
-    
-    + can receive an optional attribute parameter. In this case, it will return the value stored at this parameter in your object.
+_You can - and we recommend to - sequentially set attributes before saving'em._
 
-    `userModel.get('name') // returns 'Jake'`
+### `save()`
 
-    + if there isn't parameters, get method returns the entire object.
+Saves the data that you did modifiy.
 
-    `userModel.get() // returns the entire object`
+If the data haves a `primaryKey (id, _id, ...)` it will fetch using the put or patch method (based on your preference you've set on model config), else, the data will be fetched with post method.
 
-+ getOriginalData():
-    
-    + returns the full object as how it was before been changed.
+Basically you will insert some data, modify - if you want to - and save it.
 
-    + if it has never been changed, returns the initial object.
+To fetch the data, will be used the url you've set on model's config.
 
-    + saved changes can't be retrieved by this method.
+### `get()`
 
+Can receive an optional attribute parameter. In this case, it will return the value stored at this parameter in your object.
 
-+ remove():
+```js
+myModel.get("name"); // returns 'Jake'
+```
 
-    + makes a delete request based on object's primary key.
+If there isn't parameters, get method returns the entire object.
 
-    + if there isn't a primary key in the object, remove method will not execute.
+```js
+myModel.get(); // returns the entire object
+```
+
+### `getOriginalData()`
+
+Returns the full object as how it was before been changed.
+
+If it has never been changed, returns the initial object.
+
+Saved changes can't be retrieved by this method.
+
+### `remove()`
+
+Makes a delete request based on object's primary key.
+
+If there isn't a primary key in the object, remove method will not execute.
